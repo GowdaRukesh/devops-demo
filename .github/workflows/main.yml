@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify index.html exists
+        run: test -f index.html
+
+      - name: Check HTML is well-formed
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxml2-utils
+          xmllint --html --noout index.html
+
+      - name: Done
+        run: echo "Build passed for ${{ github.sha }}"
